@@ -1,15 +1,19 @@
+// Import packages
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:nanoid/nanoid.dart';
 
-void main() => runApp(App());
-
+// Creates a stateless widget class named App
 class App extends StatelessWidget {
+  // Tells the Dart analyzer to override interface build methods with this method
   @override
+  // Create a MaterialApp interface with title 'To-Do List' and create  an instance of the TodoList class
   Widget build(BuildContext context) {
     return MaterialApp(title: 'To-Do List', home: TodoList());
   }
 }
 
+// Creates a stateful widget class named TodoList
 class TodoList extends StatefulWidget {
   @override
   _TodoListState createState() => _TodoListState();
@@ -83,3 +87,6 @@ class _TodoListState extends State<TodoList> {
     return _todoWidgets;
   }
 }
+
+// Runs the main application
+void main() => runApp(App());
