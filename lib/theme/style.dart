@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Theme configurations for the Material app
 ThemeData appTheme() {
   return ThemeData(
     primarySwatch: Colors.lightBlue,

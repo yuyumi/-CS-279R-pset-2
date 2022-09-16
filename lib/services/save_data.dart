@@ -2,21 +2,28 @@ import 'dart:convert';
 import 'package:flutter_todo/models/todo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// An object that stores the todo list items into a json that is fed into SharedPreferences for local storage
 class TodoList {
-  static Future<void> set_data(List<dynamic> _data) async {
-    String d = json.encode(_data);
+  // Asynchronously store the data into SharedPreferences
+  static Future<void> setData(List<dynamic> todos) async {
+    // Create a json from the list of todo items
+    String todoString = json.encode(todos);
+
+    // Create an instance of SharedPreferences in local storage and store the json of the todo items with 'taskList' as the key
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('all_tasks', d);
+    await prefs.setString('taskList', todoString);
   }
 
-  static Future<void> get_data() async {
+  // Asynchronously get the data from local storage
+  static Future<void> getData() async {
+    // Retrieve the instance of SharedPreferences from local storage
     final prefs = await SharedPreferences.getInstance();
-    String all_tasks = '';
-    all_tasks = (prefs.getString('all_tasks') != null
-        ? prefs.getString('all_tasks')
-        : '')!;
-    if (all_tasks != '') {
-      Todo.all_tasks = json.decode(all_tasks) as List<dynamic>;
+
+    // Retrieve the json of the todo list and store it as a renderable object
+    // Silently fail if todo list does not exist in the local storage
+    String taskList = (prefs.getString('taskList') ?? '');
+    if (taskList != '') {
+      Todo.todos = json.decode(taskList) as List<dynamic>;
     }
   }
 }

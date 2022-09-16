@@ -2,23 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_todo/models/todo.dart';
 import 'package:flutter_todo/routes.dart';
 
+// Create a homepage that has updatable states
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  // Override the default createState method to execute the _HomePageState constructor
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
+// The state object of the homepage
 class _HomePageState extends State<HomePage> {
+  // Override default initialization to initialize the HomePage class
   @override
   void initState() {
     super.initState();
   }
 
+  // Override the default build method
   @override
   Widget build(BuildContext context) {
+    // Use the SafeArea method to create a homepage that works for most standard operating systems
     return SafeArea(
+      // Creates a visual scaffold for Material Design widgets.
       child: Scaffold(
+        // Creates a Material Design application header bar
         appBar: AppBar(
           title: Row(children: const [
             SizedBox(
@@ -27,64 +35,73 @@ class _HomePageState extends State<HomePage> {
             Text('Todo App')
           ]),
         ),
+        // Updateable container
         body: Container(
           padding: const EdgeInsets.fromLTRB(5, 20, 5, 10),
           color: Colors.white,
+          // Allows reordering of todo items
           child: ReorderableListView(
             onReorder: (int start, int current) {
-              // dragging from top to bottom
+              // Allows dragging a todo task from top to bottom
               if (start < current) {
                 int end = current - 1;
-                dynamic startItem = Todo.all_tasks[start];
+                dynamic startItem = Todo.todos[start];
                 int i = 0;
                 int local = start;
+                // Swap the selected todo item with the other items in the list
                 do {
-                  Todo.all_tasks[local] = Todo.all_tasks[++local];
+                  Todo.todos[local] = Todo.todos[++local];
                   i++;
                 } while (i < end - start);
-                Todo.all_tasks[end] = startItem;
+                Todo.todos[end] = startItem;
               }
-              // dragging from bottom to top
+              // Allows dragging a todo task from bottom to top
               else if (start > current) {
-                dynamic startItem = Todo.all_tasks[start];
+                dynamic startItem = Todo.todos[start];
+                // Swap the selected todo item with the other items in the list
                 for (int i = start; i > current; i--) {
-                  Todo.all_tasks[i] = Todo.all_tasks[i - 1];
+                  Todo.todos[i] = Todo.todos[i - 1];
                 }
-                Todo.all_tasks[current] = startItem;
+                Todo.todos[current] = startItem;
               }
+              // Update the list of todos
               setState(() {
-                Todo.set_all_tasks(Todo.all_tasks);
+                Todo.setTodos(Todo.todos);
               });
             },
+            // Decorate each todo list item with mark as completed box, an edit icon, and a delete icon
             children: [
-              for (int i = 0; i < Todo.all_tasks.length; i++)
+              for (int i = 0; i < Todo.todos.length; i++)
                 ListTile(
-                  key: Key("${i}"),
+                  key: Key("$i"),
+                  // Checkbox icon
                   leading: InkWell(
                       child: Icon(
-                        Todo.is_task_completed(i)
+                        Todo.isCompleted(i)
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
                       ),
                       onTap: () {
                         setState(() {
-                          Todo.task_complete(i);
+                          Todo.markComplete(i);
                         });
                       }),
-                  title: Text("${Todo.all_tasks[i]['name']}",
+                  // Todo item name and description
+                  title: Text("${Todo.todos[i]['name']}",
                       style: TextStyle(
-                          decoration: Todo.is_task_completed(i)
+                          decoration: Todo.isCompleted(i)
                               ? TextDecoration.lineThrough
                               : TextDecoration.none)),
-                  subtitle: Text("${Todo.all_tasks[i]['description']}",
+                  subtitle: Text("${Todo.todos[i]['description']}",
                       style: TextStyle(
-                          decoration: Todo.is_task_completed(i)
+                          decoration: Todo.isCompleted(i)
                               ? TextDecoration.lineThrough
                               : TextDecoration.none)),
                   trailing: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.15,
                     child: Row(
                       children: [
+                        // Edit icon that onclick routes to the '/update' page
                         InkWell(
                             child: const Icon(
                               Icons.edit,
@@ -97,6 +114,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           width: 5,
                         ),
+                        // Delete icon that onclick shows a confirmation screen, clicking 'Yes' triggers the delete function of the Todo class
                         InkWell(
                             child: const Icon(
                               Icons.delete,
@@ -115,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                                           child: const Text("Yes"),
                                           onPressed: () {
                                             setState(() {
-                                              Todo.del_task(context, i);
+                                              Todo.deleteTodo(context, i);
                                             });
                                             Navigator.of(context).pop();
                                             ScaffoldMessenger.of(context)
@@ -140,10 +158,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 )
-              //_list.map((item) => .toList()
             ],
           ),
         ),
+        // '+' icon which onclick sends the user to the '/create' page to create a new todo task
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, '/create');

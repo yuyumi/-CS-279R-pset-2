@@ -2,41 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_todo/services/save_data.dart';
 
+// Todo item object that interacts with the TodoList
 class Todo {
-  static String appTitle = "Todo App";
+  // Initialize the todo item list
+  static List<dynamic> todos = [];
 
-  static List<dynamic> all_tasks = [];
+  // CRUD Operations
 
-  static void set_all_tasks(List<dynamic> t) {
-    all_tasks = t;
-    TodoList.set_data(all_tasks);
+  // Set the todos of the todo list to be the input
+  static void setTodos(List<dynamic> todos) {
+    TodoList.setData(todos);
   }
 
-  static void task_complete(int id) {
-    all_tasks[id]['complete'] = all_tasks[id]['complete'] == '0' ? '1' : '0';
-    TodoList.set_data(all_tasks);
+  // Add a todo, default marking the todo as incomplete
+  static void addTodo(String name, String description) {
+    todos.add({'name': name, 'description': description, 'complete': '0'});
+    TodoList.setData(todos);
   }
 
-  static bool is_task_completed(int id) {
-    return all_tasks[id]['complete'] == '1' ? true : false;
-  }
-
-  static void add_task(String name, String description) {
-    all_tasks.add({'name': name, 'description': description, 'complete': '0'});
-    TodoList.set_data(all_tasks);
-  }
-
-  static void upd_task(int id, String name, String description, complete) {
-    all_tasks[id] = {
+  // Update a todo queried by id
+  static void editTodo(int id, String name, String description, complete) {
+    todos[id] = {
       'name': name,
       'description': description,
       'complete': complete
     };
-    TodoList.set_data(all_tasks);
+    TodoList.setData(todos);
   }
 
-  static void del_task(BuildContext context, int id) {
-    all_tasks.removeAt(id);
-    TodoList.set_data(all_tasks);
+  // Mark a todo queried by id as complete
+  static void markComplete(int id) {
+    todos[id]['complete'] = todos[id]['complete'] == '0' ? '1' : '0';
+    TodoList.setData(todos);
+  }
+
+  // Determine whether a todo queried by id is complete
+  static bool isCompleted(int id) {
+    return todos[id]['complete'] == '1' ? true : false;
+  }
+
+  // Delete a todo queried by id
+  static void deleteTodo(BuildContext context, int id) {
+    todos.removeAt(id);
+    TodoList.setData(todos);
   }
 }
