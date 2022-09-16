@@ -1,35 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_todo/components/Drawer.dart';
-import 'package:flutter_todo/models/Todo.dart';
+import 'package:flutter_todo/models/todo.dart';
 
-class UpdatePage extends StatefulWidget {
-  final int id;
-
-  const UpdatePage({required this.id, Key? key}) : super(key: key);
+class CreatePage extends StatefulWidget {
+  const CreatePage({Key? key}) : super(key: key);
 
   @override
-  State<UpdatePage> createState() => _UpdatePageState();
+  State<CreatePage> createState() => _CreatePageState();
 }
 
-class _UpdatePageState extends State<UpdatePage> {
+class _CreatePageState extends State<CreatePage> {
   final _formKey = GlobalKey<FormState>();
   String name = '';
   String description = '';
-  @override
-  void initState() {
-    name = Todo.all_tasks[widget.id]['name'].toString();
-    description = Todo.all_tasks[widget.id]['description'].toString();
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
         title: Row(children: const [
@@ -37,38 +25,36 @@ class _UpdatePageState extends State<UpdatePage> {
           SizedBox(
             width: 9,
           ),
-          Text('Update Todo')
+          Text('Create Todo')
         ]),
       ),
-      endDrawer: Todo_Drawer(),
       body: ListView(
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.1,
           ),
-          Center(
+          const Center(
               child: Text(
-            'Update task',
-            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            'Create new',
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           )),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.05,
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Form(
               key: _formKey,
               child: Column(
                 children: <Widget>[
                   Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 32),
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Material(
                           elevation: 2.0,
-                          borderRadius: BorderRadius.all(Radius.circular(3)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(3)),
                           child: TextFormField(
-                            initialValue: Todo.all_tasks[widget.id]['name'],
                             decoration: const InputDecoration(
-                                //labelText: 'Name',
                                 hintText: 'Name',
                                 prefixIcon: Material(
                                   elevation: 0,
@@ -76,7 +62,7 @@ class _UpdatePageState extends State<UpdatePage> {
                                       BorderRadius.all(Radius.circular(3)),
                                   child: Icon(
                                     Icons.task,
-                                    color: Colors.indigo,
+                                    color: Colors.cyan,
                                   ),
                                 ),
                                 border: InputBorder.none,
@@ -96,16 +82,14 @@ class _UpdatePageState extends State<UpdatePage> {
                     height: 10,
                   ),
                   Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 32),
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Material(
                           elevation: 2.0,
-                          borderRadius: BorderRadius.all(Radius.circular(3)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(3)),
                           child: TextFormField(
-                            initialValue: Todo.all_tasks[widget.id]
-                                ['description'],
                             maxLines: 4,
                             decoration: const InputDecoration(
-                                //labelText: 'Description',
                                 hintText: 'Description',
                                 prefixIcon: Material(
                                   elevation: 0,
@@ -113,7 +97,7 @@ class _UpdatePageState extends State<UpdatePage> {
                                       BorderRadius.all(Radius.circular(3)),
                                   child: Icon(
                                     Icons.description,
-                                    color: Colors.indigo,
+                                    color: Colors.cyan,
                                   ),
                                 ),
                                 border: InputBorder.none,
@@ -135,16 +119,22 @@ class _UpdatePageState extends State<UpdatePage> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Todo.upd_task(widget.id, name, description,
-                            Todo.all_tasks[widget.id]['complete']);
+                        Todo.add_task(name, description);
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             '/', (Route<dynamic> route) => false);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Updated Successfully')),
+                          const SnackBar(content: Text('Added Successfully')),
                         );
                       }
                     },
-                    child: const Text('Update'),
+                    child: const Text('Add'),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('Cancel'),
                   ),
                 ],
               ),

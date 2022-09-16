@@ -1,36 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_todo/components/Drawer.dart';
-import 'package:flutter_todo/models/Todo.dart';
+import 'package:flutter_todo/models/todo.dart';
 
-class CreatePage extends StatefulWidget {
-  const CreatePage({Key? key}) : super(key: key);
+class UpdatePage extends StatefulWidget {
+  final int id;
+
+  const UpdatePage({required this.id, Key? key}) : super(key: key);
 
   @override
-  State<CreatePage> createState() => _CreatePageState();
+  State<UpdatePage> createState() => _UpdatePageState();
 }
 
-class _CreatePageState extends State<CreatePage> {
+class _UpdatePageState extends State<UpdatePage> {
   final _formKey = GlobalKey<FormState>();
   String name = '';
   String description = '';
+  @override
+  void initState() {
+    name = Todo.all_tasks[widget.id]['name'].toString();
+    description = Todo.all_tasks[widget.id]['description'].toString();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
         title: Row(children: const [
-          //Icon(Icons.check_box),
           SizedBox(
             width: 9,
           ),
-          Text('Create Todo')
+          Text('Update Todo')
         ]),
       ),
-      endDrawer: Todo_Drawer(),
       body: ListView(
         children: [
           SizedBox(
@@ -38,7 +44,7 @@ class _CreatePageState extends State<CreatePage> {
           ),
           const Center(
               child: Text(
-            'Create new',
+            'Update task',
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           )),
           SizedBox(
@@ -56,8 +62,8 @@ class _CreatePageState extends State<CreatePage> {
                           elevation: 2.0,
                           borderRadius: BorderRadius.all(Radius.circular(3)),
                           child: TextFormField(
+                            initialValue: Todo.all_tasks[widget.id]['name'],
                             decoration: const InputDecoration(
-                                //labelText: 'Name',
                                 hintText: 'Name',
                                 prefixIcon: Material(
                                   elevation: 0,
@@ -65,7 +71,7 @@ class _CreatePageState extends State<CreatePage> {
                                       BorderRadius.all(Radius.circular(3)),
                                   child: Icon(
                                     Icons.task,
-                                    color: Colors.indigo,
+                                    color: Colors.cyan,
                                   ),
                                 ),
                                 border: InputBorder.none,
@@ -90,6 +96,8 @@ class _CreatePageState extends State<CreatePage> {
                           elevation: 2.0,
                           borderRadius: BorderRadius.all(Radius.circular(3)),
                           child: TextFormField(
+                            initialValue: Todo.all_tasks[widget.id]
+                                ['description'],
                             maxLines: 4,
                             decoration: const InputDecoration(
                                 //labelText: 'Description',
@@ -100,7 +108,7 @@ class _CreatePageState extends State<CreatePage> {
                                       BorderRadius.all(Radius.circular(3)),
                                   child: Icon(
                                     Icons.description,
-                                    color: Colors.indigo,
+                                    color: Colors.cyan,
                                   ),
                                 ),
                                 border: InputBorder.none,
@@ -122,15 +130,23 @@ class _CreatePageState extends State<CreatePage> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Todo.add_task(name, description);
+                        Todo.upd_task(widget.id, name, description,
+                            Todo.all_tasks[widget.id]['complete']);
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             '/', (Route<dynamic> route) => false);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Added Successfully')),
+                          const SnackBar(content: Text('Updated Successfully')),
                         );
                       }
                     },
-                    child: const Text('Add'),
+                    child: const Text('Update'),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('Cancel'),
                   ),
                 ],
               ),

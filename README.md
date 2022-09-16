@@ -4,4 +4,6 @@
 
 ## Code Citation
 
-https://flutterawesome.com/todo-app-built-with-flutter/
+Derived from: https://flutterawesome.com/todo-app-built-with-flutter/
+
+Removed distracting drawer and added `cancel` button.

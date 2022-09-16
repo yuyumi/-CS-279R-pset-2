@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo/components/Drawer.dart';
-import 'package:flutter_todo/models/Todo.dart';
+import 'package:flutter_todo/models/todo.dart';
 import 'package:flutter_todo/routes.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +12,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    //Todo.all_tasks.foreach((key,value)=>_list.add(value['name']));
     super.initState();
   }
 
@@ -23,14 +21,12 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Row(children: const [
-            Icon(Icons.check_box),
             SizedBox(
               width: 9,
             ),
             Text('Todo App')
           ]),
         ),
-        endDrawer: Todo_Drawer(),
         body: Container(
           padding: const EdgeInsets.fromLTRB(5, 20, 5, 10),
           color: Colors.white,
@@ -92,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                         InkWell(
                             child: const Icon(
                               Icons.edit,
-                              color: Colors.indigoAccent,
+                              color: Colors.green,
                             ),
                             onTap: () {
                               Routes.id = i;
